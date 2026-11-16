@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HOOKED BY LINA | Slow Handcraft & Raw Slub Fibers</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN & Config -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            karoo: {
+              bg: '#F2F6FA',
+              panel: '#E6EFF8',
+              card: '#FFFFFF',
+              border: '#D5E2F0',
+              primary: '#5C8BB8',
+              primaryDark: '#3E6B96',
+              ink: '#1C2530',
+              muted: '#5A6B7C',
+              oat: '#EFECE6',
+              terracotta: '#B85D3B',
+              charcoal: '#4A4E54',
+              cobalt: '#5B87B5'
+            }
+          },
+          fontFamily: {
+            serif: ['"Cormorant Garamond"', 'Georgia', 'serif'],
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="styles.css" />
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="min-h-screen flex flex-col pb-24 md:pb-0">
+
+  <!-- TOP NAVIGATION HEADER -->
+  <header class="sticky top-0 z-40 bg-karoo-bg/95 backdrop-blur-md border-b border-karoo-border transition-all">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <!-- Left: Back or Mobile Drawer Trigger + Desktop Nav -->
+      <div class="flex items-center gap-3">
+        <button id="backBtn" onclick="navigateBack()" class="hidden p-2 -ml-2 rounded-full hover:bg-karoo-panel text-karoo-ink transition" title="Back">
+          <i data-lucide="arrow-left" class="w-5 h-5"></i>
+        </button>
+        <button onclick="toggleMobileDrawer()" class="p-2 -ml-2 rounded-full hover:bg-karoo-panel text-karoo-ink md:hidden transition" title="Menu">
+          <i data-lucide="menu" class="w-5 h-5"></i>
+        </button>
+
+        <!-- Desktop Links -->
+        <nav class="hidden md:flex items-center gap-6 text-sm font-medium text-karoo-muted">
+          <button onclick="switchTab('home')" id="desk-nav-home" class="text-karoo-muted hover:text-karoo-ink transition">Home</button>
+          <button onclick="switchTab('collection')" id="desk-nav-collection" class="text-karoo-primary font-semibold transition border-b-2 border-karoo-primary pb-0.5">Collection</button>
+          <button onclick="switchTab('detail', 7)" id="desk-nav-atelier" class="text-karoo-muted hover:text-karoo-ink transition">Karoo Atelier</button>
+          <button onclick="switchTab('saved')" id="desk-nav-saved" class="text-karoo-muted hover:text-karoo-ink transition">Saved</button>
+        </nav>
+      </div>
+
+      <!-- Center Brand Title -->
+      <button onclick="switchTab('home')" id="headerBrandTitle" class="font-editorial text-xl sm:text-2xl tracking-wider font-semibold text-karoo-ink uppercase transition">
+        HOOKED BY LINA
+      </button>
+
+      <!-- Right Icons (Starts with 0 / Hidden Badges) -->
+      <div class="flex items-center gap-2 sm:gap-3">
+        <button onclick="focusSearch()" class="p-2 rounded-full hover:bg-karoo-panel text-karoo-ink transition" title="Search fibers">
+          <i data-lucide="search" class="w-5 h-5"></i>
+        </button>
+        <button onclick="switchTab('saved')" class="hidden sm:flex p-2 rounded-full hover:bg-karoo-panel text-karoo-ink relative transition" title="Saved Garments">
+          <i data-lucide="heart" class="w-5 h-5"></i>
+          <span id="headerSavedBadge" class="hidden absolute top-1 right-1 w-4 h-4 bg-karoo-primary text-white text-[10px] font-bold rounded-full items-center justify-center">0</span>
+        </button>
+        <button onclick="switchTab('bag')" class="p-2 rounded-full hover:bg-karoo-panel text-karoo-ink relative transition" title="Handcrafted Bag">
+          <i data-lucide="shopping-bag" class="w-5 h-5"></i>
+          <span id="headerBagBadge" class="hidden absolute top-1 right-0.5 min-w-[18px] h-[18px] px-1 bg-karoo-primary text-white text-[10px] font-bold rounded-full items-center justify-center shadow-sm">0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MOBILE SLIDE-OVER DRAWER -->
+  <div id="mobileDrawer" class="fixed inset-0 z-50 hidden">
+    <div onclick="toggleMobileDrawer()" class="fixed inset-0 bg-black/40 backdrop-blur-xs"></div>
+    <div class="fixed top-0 left-0 bottom-0 w-72 bg-karoo-bg p-6 shadow-2xl flex flex-col justify-between z-10 animate-scale-in">
+      <div>
+        <div class="flex items-center justify-between border-b border-karoo-border pb-4 mb-6">
+          <span class="font-editorial text-xl font-bold tracking-wider">HOOKED BY LINA</span>
+          <button onclick="toggleMobileDrawer()" class="p-1.5 rounded-full hover:bg-karoo-panel">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+        <p class="text-[11px] uppercase tracking-widest text-karoo-primary font-semibold mb-3">Eastern Cape Guilds</p>
+        <nav class="space-y-3 text-base font-medium">
+          <button onclick="switchTab('home'); toggleMobileDrawer()" class="w-full text-left py-2 px-3 rounded-lg hover:bg-karoo-panel flex items-center justify-between">
+            <span>Capsule IV Home</span>
+            <i data-lucide="chevron-right" class="w-4 h-4 text-karoo-muted"></i>
+          </button>
+          <button onclick="switchTab('collection'); toggleMobileDrawer()" class="w-full text-left py-2 px-3 rounded-lg hover:bg-karoo-panel flex items-center justify-between">
+            <span>All Handcrafted Pieces</span>
+            <i data-lucide="chevron-right" class="w-4 h-4 text-karoo-muted"></i>
+          </button>
+          <button onclick="openProductDetail(7); toggleMobileDrawer()" class="w-full text-left py-2 px-3 rounded-lg hover:bg-karoo-panel flex items-center justify-between">
+            <span>The Aura Wavy Hat (2025)</span>
+            <i data-lucide="sparkles" class="w-4 h-4 text-karoo-primary"></i>
+          </button>
+          <button onclick="switchTab('saved'); toggleMobileDrawer()" class="w-full text-left py-2 px-3 rounded-lg hover:bg-karoo-panel flex items-center justify-between">
+            <span>Saved Wishlist</span>
+            <i data-lucide="heart" class="w-4 h-4 text-karoo-muted"></i>
+          </button>
+          <button onclick="switchTab('bag'); toggleMobileDrawer()" class="w-full text-left py-2 px-3 rounded-lg hover:bg-karoo-panel flex items-center justify-between">
+            <span>Hooked By Lina Bag</span>
+            <i data-lucide="shopping-bag" class="w-4 h-4 text-karoo-muted"></i>
+          </button>
+        </nav>
+      </div>
+      <div class="border-t border-karoo-border pt-4 text-xs text-karoo-muted space-y-1">
+        <p class="font-semibold text-karoo-ink">Artisan Guilds: Mthatha &amp; Nieu-Bethesda</p>
+        <p>100% Traceable Karoo Mohair &amp; Plant Dyes</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT CONTAINER -->
+  <main class="flex-grow">
+
+    <!-- ==========================================
+         VIEW 1: HOME VIEW
+         ========================================== -->
+    <section id="view-home" class="hidden max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-10 animate-fade-up">
+      <!-- Hero Editorial Capsule Card -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 rounded-2xl overflow-hidden shadow-lg border border-karoo-border bg-karoo-ink text-white">
+        <div class="lg:col-span-7 relative min-h-[340px] sm:min-h-[420px] bg-stone-900 overflow-hidden">
+          <img src="src/bucket_hat.jpeg" alt="Obsidian Wave Crochet Bucket Hat" class="w-full h-full object-cover opacity-90 hover:scale-105 transition duration-700" />
+          <div class="absolute top-4 left-4 bg-white/95 text-karoo-ink px-4 py-1.5 rounded-full text-xs font-semibold tracking-wider uppercase shadow">
+            AUTUMN / WINTER 25 • CAPSULE IV
+          </div>
+          <div class="absolute bottom-3 right-4 bg-black/60 backdrop-blur-xs text-white/90 px-3 py-1 rounded text-xs">
+            Nieu-Bethesda &amp; Mthatha Ateliers
+          </div>
+        </div>
+        <div class="lg:col-span-5 p-6 sm:p-10 flex flex-col justify-between bg-gradient-to-b from-[#18202C] to-[#10161F]">
+          <div class="space-y-4">
+            <span class="text-xs uppercase tracking-widest text-karoo-primary font-semibold">Series 04 / Karoo Highlands</span>
+            <h1 class="font-editorial text-3xl sm:text-4xl lg:text-5xl leading-tight font-semibold text-white">
+              Slow Handcraft &amp; Raw Slub Fibers
+            </h1>
+            <p class="text-sm text-slate-300 leading-relaxed">
+              Each garment is gently hand-crocheted across 14 to 38 hours by our Eastern Cape craftswomen guild using certified Karoo wool, kid mohair, and botanical fynbos dyes.
+            </p>
+          </div>
+          <div class="pt-6 space-y-3">
+            <button onclick="switchTab('collection')" class="w-full py-3.5 px-6 rounded-xl bg-karoo-primary hover:bg-karoo-primaryDark text-white font-semibold text-xs sm:text-sm tracking-widest uppercase transition flex items-center justify-center gap-2 shadow-md">
+              <span>EXPLORE THE NEW CAPSULE</span>
+              <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Featured Limited Batch Spotlight & Dual Preview -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+        <!-- Left Spotlight Card -->
+        <div class="lg:col-span-7 bg-white rounded-2xl border border-karoo-border overflow-hidden shadow-xs flex flex-col justify-between garment-card">
+          <div class="relative h-80 sm:h-96 bg-stone-100 overflow-hidden cursor-pointer" onclick="openProductDetail(1)">
+            <img src="src/bucket_hat.jpeg" alt="Limited Batch Obsidian Wave Hat" class="w-full h-full object-cover" />
+            <div class="absolute top-4 left-4 space-y-1.5">
+              <div class="bg-karoo-ink/85 backdrop-blur-xs text-white text-xs font-semibold px-3 py-1 rounded-full">
+                Limited Batch • 14 Units
+              </div>
+              <div class="bg-white/95 text-karoo-ink text-[11px] font-semibold px-3 py-1 rounded-full shadow-xs">
+                14 Crochet Hours
+              </div>
+            </div>
+            <button onclick="event.stopPropagation(); toggleWishlist(1)" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-white/90 hover:bg-white flex items-center justify-center shadow-sm">
+              <i data-lucide="heart" id="home-heart-1" class="w-4 h-4 text-karoo-ink"></i>
+            </button>
+          </div>
+          <div class="p-5 sm:p-6 bg-[#141B24] text-white flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <p class="text-[11px] uppercase tracking-widest text-karoo-primary font-semibold">Pure Wool • Hand-Crochet</p>
+              <h2 class="font-editorial text-2xl font-semibold">Obsidian Wave Crochet Bucket Hat</h2>
+              <p class="text-xs text-slate-300 mt-0.5">R140 ZAR • 7 Days Craft Window</p>
+            </div>
+            <div class="flex items-center justify-between sm:justify-end gap-4">
+              <div class="flex items-center gap-2">
+                <span class="w-4 h-4 rounded-full bg-slate-900 ring-2 ring-karoo-primary cursor-pointer" title="Obsidian Wave"></span>
+                <span class="w-4 h-4 rounded-full bg-stone-200 border border-white/40 cursor-pointer" title="Natural Cream"></span>
+              </div>
+              <button onclick="openProductDetail(1)" class="px-4 py-2.5 rounded-lg bg-white text-karoo-ink hover:bg-karoo-panel font-semibold text-xs tracking-wider uppercase transition">
+                ACQUIRE GARMENT
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right 2-Column Sub-Grid -->
+        <div class="lg:col-span-5 grid grid-cols-2 gap-4">
+          <div class="bg-white rounded-2xl border border-karoo-border overflow-hidden flex flex-col justify-between garment-card cursor-pointer" onclick="openProductDetail(2)">
+            <div class="relative h-52 sm:h-64 bg-stone-100 overflow-hidden">
+              <img src="src/buttons.jpeg" alt="Slouchy Bone Button Beanie" class="w-full h-full object-cover" />
+              <span class="absolute top-3 left-3 bg-karoo-ink/80 text-white text-[10px] font-semibold px-2.5 py-1 rounded-full">
+                Karoo Merino
+              </span>
+            </div>
+            <div class="p-4 flex-grow flex flex-col justify-between">
+              <div>
+                <p class="text-[10px] uppercase tracking-wider text-karoo-muted">Forest Wool • Bone Buttons</p>
+                <h3 class="font-editorial text-lg font-semibold text-karoo-ink mt-0.5">Slouchy Beanie</h3>
+              </div>
+              <div class="pt-3 mt-2 border-t border-karoo-border flex items-center justify-between">
+                <span class="font-bold text-sm">R170</span>
+                <button onclick="event.stopPropagation(); addToBag(2)" class="px-2.5 py-1 rounded-md bg-karoo-primary text-white text-xs font-medium hover:bg-karoo-primaryDark transition">
+                  Bag +
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-2xl border border-karoo-border overflow-hidden flex flex-col justify-between garment-card cursor-pointer" onclick="openProductDetail(3)">
+            <div class="relative h-52 sm:h-64 bg-stone-100 overflow-hidden">
+              <img src="src/light_blue.jpeg" alt="Astral Star Striped Beanie" class="w-full h-full object-cover" />
+              <span class="absolute top-3 left-3 bg-white/95 text-karoo-ink text-[10px] font-semibold px-2.5 py-1 rounded-full shadow-xs">
+                Hand-Knitted
+              </span>
+            </div>
+            <div class="p-4 flex-grow flex flex-col justify-between">
+              <div>
+                <p class="text-[10px] uppercase tracking-wider text-karoo-muted">Cobalt &amp; Sky • Soft Yarn</p>
+                <h3 class="font-editorial text-lg font-semibold text-karoo-ink mt-0.5">Astral Star Beanie</h3>
+              </div>
+              <div class="pt-3 mt-2 border-t border-karoo-border flex items-center justify-between">
+                <span class="font-bold text-sm">R190</span>
+                <button onclick="event.stopPropagation(); addToBag(3)" class="px-2.5 py-1 rounded-md bg-karoo-primary text-white text-xs font-medium hover:bg-karoo-primaryDark transition">
+                  Bag +
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Eastern Cape Atelier Provenance Strip -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="bg-white p-5 rounded-xl border border-karoo-border flex items-start gap-3.5">
+          <div class="p-2.5 rounded-lg bg-karoo-panel text-karoo-primary">
+            <i data-lucide="compass" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h4 class="font-editorial text-lg font-semibold">Graaff-Reinet &amp; Mthatha Guilds</h4>
+            <p class="text-xs text-karoo-muted leading-relaxed mt-1">Direct living-wage partnerships with independent women weavers across the Eastern Cape.</p>
+          </div>
+        </div>
+        <div class="bg-white p-5 rounded-xl border border-karoo-border flex items-start gap-3.5">
+          <div class="p-2.5 rounded-lg bg-karoo-panel text-karoo-primary">
+            <i data-lucide="sprout" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h4 class="font-editorial text-lg font-semibold">Karoo Botanical Extraction</h4>
+            <p class="text-xs text-karoo-muted leading-relaxed mt-1">Yarns are cold-dipped in fynbos, wild rosemary, and cedar bark with zero synthetic runoff.</p>
+          </div>
+        </div>
+        <div class="bg-white p-5 rounded-xl border border-karoo-border flex items-start gap-3.5">
+          <div class="p-2.5 rounded-lg bg-karoo-panel text-karoo-primary">
+            <i data-lucide="infinity" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h4 class="font-editorial text-lg font-semibold">Lifetime Stitch Repair</h4>
+            <p class="text-xs text-karoo-muted leading-relaxed mt-1">Complimentary structural mending and botanical colour refreshes for the life of your piece.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         VIEW 2: COLLECTION VIEW
+         ========================================== -->
+    <section id="view-collection" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 space-y-6 animate-fade-up">
+
+      <!-- Search Bar -->
+      <div class="relative">
+        <i data-lucide="search" class="w-4 h-4 text-karoo-muted absolute left-4 top-1/2 -translate-y-1/2"></i>
+        <input
+          id="searchInput"
+          type="text"
+          oninput="renderCollection()"
+          placeholder="Search natural fibers, stitch gauge, garment..."
+          class="w-full pl-11 pr-10 py-3 bg-white rounded-xl border border-karoo-border text-sm text-karoo-ink placeholder-karoo-muted focus:outline-none focus:ring-2 focus:ring-karoo-primary transition shadow-2xs"
+        />
+        <button id="clearSearchBtn" onclick="clearSearch()" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-karoo-muted hover:text-karoo-ink p-1">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <!-- Category Filter Pills -->
+      <div class="flex items-center gap-2.5 overflow-x-auto no-scrollbar pb-1" id="categoryPills">
+        <button onclick="setCategory('all')" data-cat="all" class="cat-pill shrink-0 px-5 py-2 rounded-full text-xs font-semibold bg-karoo-primary text-white shadow-xs transition">
+          All Pieces (10)
+        </button>
+        <button onclick="setCategory('Hats & Beanies')" data-cat="Hats & Beanies" class="cat-pill shrink-0 px-5 py-2 rounded-full text-xs font-semibold bg-white text-karoo-ink border border-karoo-border hover:bg-karoo-panel transition">
+          Hats &amp; Beanies
+        </button>
+        <button onclick="setCategory('Tops & Camisoles')" data-cat="Tops & Camisoles" class="cat-pill shrink-0 px-5 py-2 rounded-full text-xs font-semibold bg-white text-karoo-ink border border-karoo-border hover:bg-karoo-panel transition">
+          Tops &amp; Camisoles
+        </button>
+        <button onclick="setCategory('Bags & Accessories')" data-cat="Bags & Accessories" class="cat-pill shrink-0 px-5 py-2 rounded-full text-xs font-semibold bg-white text-karoo-ink border border-karoo-border hover:bg-karoo-panel transition">
+          Bags &amp; Accessories
+        </button>
+        <button onclick="setCategory('Scarves')" data-cat="Scarves" class="cat-pill shrink-0 px-5 py-2 rounded-full text-xs font-semibold bg-white text-karoo-ink border border-karoo-border hover:bg-karoo-panel transition">
+          Scarves &amp; Wraps
+        </button>
+      </div>
+
+      <!-- Sub-Toolbar: Filter Gauge, Sort Curated, SA Courier -->
+      <div class="bg-karoo-panel/80 rounded-xl px-3.5 py-2.5 border border-karoo-border flex flex-wrap items-center justify-between gap-2 text-xs text-karoo-ink">
+        <button onclick="toggleGaugeFilter()" class="flex items-center gap-1.5 font-medium hover:text-karoo-primary transition">
+          <i data-lucide="sliders-horizontal" class="w-3.5 h-3.5 text-karoo-primary"></i>
+          <span id="activeGaugeLabel">Filter (Gauge &amp; Fiber)</span>
+        </button>
+
+        <div class="flex items-center gap-1.5">
+          <span class="text-karoo-muted hidden sm:inline">Sort:</span>
+          <select id="sortSelect" onchange="renderCollection()" class="bg-transparent font-semibold text-karoo-ink focus:outline-none cursor-pointer">
+            <option value="curated">Artisan Curated</option>
+            <option value="price-asc">Price: Low to High</option>
+            <option value="price-desc">Price: High to Low</option>
+            <option value="hours-desc">Craft Hours Invested</option>
+          </select>
+        </div>
+
+        <div class="flex items-center gap-1.5 text-karoo-ink font-medium">
+          <i data-lucide="truck" class="w-3.5 h-3.5 text-karoo-primary"></i>
+          <span>SA Courier</span>
+        </div>
+      </div>
+
+      <!-- Expandable Gauge & Fiber Filter Drawer -->
+      <div id="gaugeFilterBox" class="hidden bg-white p-4 rounded-xl border border-karoo-border shadow-xs space-y-3 animate-scale-in">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold uppercase tracking-wider text-karoo-muted">Filter by Stitch Gauge &amp; Dispatch</span>
+          <button onclick="resetFilters()" class="text-xs text-karoo-primary font-semibold hover:underline">Reset All</button>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <button onclick="setAvailabilityFilter('all')" data-avail="all" class="avail-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-karoo-primary text-white">All Availability</button>
+          <button onclick="setAvailabilityFilter('READY TO DISPATCH')" data-avail="READY TO DISPATCH" class="avail-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-karoo-bg text-karoo-ink hover:bg-karoo-panel">Ready to Dispatch</button>
+          <button onclick="setAvailabilityFilter('MADE TO ORDER')" data-avail="MADE TO ORDER" class="avail-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-karoo-bg text-karoo-ink hover:bg-karoo-panel">Made to Order</button>
+          <button onclick="setAvailabilityFilter('LIMITED KAROO DYE')" data-avail="LIMITED KAROO DYE" class="avail-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-karoo-bg text-karoo-ink hover:bg-karoo-panel">Limited Karoo Dye</button>
+        </div>
+      </div>
+
+      <!-- Series Editorial Intro Banner -->
+      <div class="border-l-2 border-karoo-primary pl-4 py-1 space-y-1">
+        <p class="text-[11px] font-bold tracking-widest uppercase text-karoo-primary">
+          SERIES 04 / KAROO HIGHLANDS
+        </p>
+        <h1 class="font-editorial text-2xl sm:text-3xl font-semibold text-karoo-ink leading-snug">
+          Slow Handcraft &amp; Raw Slub Fibers
+        </h1>
+        <p class="text-xs sm:text-sm text-karoo-muted max-w-2xl leading-relaxed">
+          Each item is gently hand-crocheted across 14 to 38 hours using certified local wool and plant dyes.
+        </p>
+      </div>
+
+      <!-- Product Grid -->
+      <div id="collectionGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3.5 sm:gap-5">
+        <!-- Populated dynamically via app.js -->
+      </div>
+
+      <!-- Conscious Garment Rituals Card -->
+      <div class="bg-karoo-panel/70 rounded-2xl p-6 sm:p-8 border border-karoo-border text-center space-y-3 my-8">
+        <div class="flex justify-center text-karoo-primary">
+          <i data-lucide="infinity" class="w-7 h-7"></i>
+        </div>
+        <h2 class="font-editorial text-xl sm:text-2xl font-semibold text-karoo-ink">
+          Conscious Garment Rituals
+        </h2>
+        <p class="text-xs sm:text-sm text-karoo-muted max-w-md mx-auto leading-relaxed">
+          We offer lifetime complimentary stitch repair and Karoo botanical re-dips for every garment we create.
+        </p>
+        <div class="pt-2 flex items-center justify-center gap-3 sm:gap-6 text-[11px] sm:text-xs font-medium text-karoo-muted">
+          <span>Hand-Washed</span>
+          <span class="text-karoo-primary">•</span>
+          <span>Zero Synthetic Fiber</span>
+          <span class="text-karoo-primary">•</span>
+          <span>Free SA Returns</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         VIEW 3: PRODUCT DETAIL VIEW
+         ========================================== -->
+    <section id="view-detail" class="hidden max-w-5xl mx-auto px-0 sm:px-6 lg:px-8 pb-12 animate-fade-up">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-0 lg:gap-8 bg-karoo-bg sm:mt-4">
+        
+        <!-- Left Column: Product Hero Image & Floating Craft Pills -->
+        <div class="lg:col-span-6">
+          <div class="relative bg-stone-200 sm:rounded-2xl overflow-hidden shadow-xs aspect-[4/5] max-h-[540px] w-full">
+            <img id="detailImage" src="src/images(1).jpg" alt="The Aura Wavy Hat" class="w-full h-full object-cover" />
+            
+            <!-- Top Floating Craft Badges -->
+            <div class="absolute top-4 left-4 right-4 flex flex-col gap-2 items-start pointer-events-none">
+              <div class="bg-white/95 backdrop-blur-xs text-karoo-ink px-3.5 py-1.5 rounded-full text-xs font-semibold shadow-sm flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-karoo-primary"></span>
+                <span id="detailCraftHours">18 Craft Hours Invested</span>
+              </div>
+              <div class="bg-white/95 backdrop-blur-xs text-karoo-ink px-3.5 py-1.5 rounded-full text-xs font-medium shadow-sm flex items-center gap-1.5">
+                <i data-lucide="map-pin" class="w-3.5 h-3.5 text-karoo-primary"></i>
+                <span id="detailOriginBadge">Hand-crocheted in Nieu-Bethesda</span>
+              </div>
+            </div>
+
+            <!-- Bottom Stitch Pill Overlay -->
+            <div class="absolute bottom-3 left-4 right-4 flex items-end justify-between">
+              <span id="detailStitchBadge" class="bg-karoo-primaryDark/95 text-white text-[10px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-md shadow">
+                CONTINUOUS WAVY BRIM STITCH
+              </span>
+              <div class="flex gap-1.5 bg-white/80 backdrop-blur-xs px-2.5 py-1 rounded-full">
+                <span class="w-2 h-2 rounded-full bg-karoo-primary"></span>
+                <span class="w-2 h-2 rounded-full bg-karoo-border"></span>
+                <span class="w-2 h-2 rounded-full bg-karoo-border"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column: Full Atelier Specifications -->
+        <div class="lg:col-span-6 px-4 sm:px-0 pt-5 lg:pt-0 space-y-5">
+          <!-- Edition & Traceable Badge -->
+          <div class="flex items-center justify-between gap-2">
+            <span id="detailEdition" class="text-[11px] font-bold uppercase tracking-widest text-karoo-muted">
+              EDITION 2025 • KAROO HERITAGE
+            </span>
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-karoo-border bg-white text-[11px] font-semibold text-karoo-ink">
+              <i data-lucide="shield-check" class="w-3.5 h-3.5 text-karoo-primary"></i>
+              100% Traceable Fiber
+            </span>
+          </div>
+
+          <!-- Title & Price -->
+          <div>
+            <h1 id="detailTitle" class="font-editorial text-3xl sm:text-4xl font-semibold text-karoo-ink">
+              The Aura Wavy Hat
+            </h1>
+            <div class="mt-1 flex items-baseline gap-2">
+              <span id="detailPrice" class="font-editorial text-2xl sm:text-3xl font-bold text-karoo-ink">R 250</span>
+              <span class="text-xs text-karoo-muted font-medium">ZAR (incl. VAT)</span>
+            </div>
+          </div>
+
+          <!-- Pristine Provenance Blend Box & Fiber Weight Profile Bar -->
+          <div class="bg-karoo-panel/50 rounded-xl p-4 border border-karoo-border space-y-3">
+            <div class="flex items-start gap-2.5">
+              <i data-lucide="layers" class="w-4 h-4 text-karoo-primary shrink-0 mt-0.5"></i>
+              <div>
+                <p class="text-[11px] font-bold uppercase tracking-wider text-karoo-ink">PRISTINE PROVENANCE BLEND</p>
+                <p id="detailBlendText" class="text-xs text-karoo-muted leading-relaxed mt-0.5">
+                  70% Certified South African Karoo Kid Mohair &amp; 30% Organic French Wet-Spun Slub Linen.
+                </p>
+              </div>
+            </div>
+
+            <div class="pt-2 border-t border-karoo-border/80 space-y-1.5">
+              <div class="flex items-center justify-between text-[11px]">
+                <span class="uppercase font-semibold text-karoo-muted">FIBER WEIGHT PROFILE</span>
+                <span id="detailGaugeLabel" class="font-bold text-karoo-primaryDark">Mid-Lace (Gauge 7)</span>
+              </div>
+              <div class="grid grid-cols-3 gap-1.5 pt-0.5">
+                <div id="gaugeSeg1" class="h-1.5 rounded-full bg-karoo-primary"></div>
+                <div id="gaugeSeg2" class="h-1.5 rounded-full bg-karoo-primary"></div>
+                <div id="gaugeSeg3" class="h-1.5 rounded-full bg-karoo-border"></div>
+              </div>
+              <div class="flex justify-between text-[10px] text-karoo-muted pt-0.5">
+                <span>Featherlace</span>
+                <span>Airy Structural</span>
+                <span>Chunky Cable</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Artisanal Colorway Swatches -->
+          <div class="space-y-2.5">
+            <div class="flex items-center justify-between">
+              <div class="text-xs">
+                <span class="font-bold uppercase tracking-wider text-karoo-ink">ARTISANAL COLORWAY: </span>
+                <span id="selectedColorName" class="text-karoo-muted font-medium">Oatmeal Undyed &amp; Cedar</span>
+              </div>
+              <span class="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-karoo-panel text-karoo-primaryDark rounded border border-karoo-border">
+                PLANT DYED
+              </span>
+            </div>
+            <div class="flex items-center gap-3">
+              <button onclick="selectColorway('Oatmeal Undyed & Cedar', this)" class="color-swatch w-9 h-9 rounded-full bg-[#E5DEC9] ring-2 ring-offset-2 ring-karoo-primary transition" title="Oatmeal Undyed & Cedar"></button>
+              <button onclick="selectColorway('Karoo Terracotta', this)" class="color-swatch w-9 h-9 rounded-full bg-[#B85D3B] hover:scale-105 transition" title="Karoo Terracotta"></button>
+              <button onclick="selectColorway('Obsidian Charcoal', this)" class="color-swatch w-9 h-9 rounded-full bg-[#4A4E54] hover:scale-105 transition" title="Obsidian Charcoal"></button>
+              <button onclick="selectColorway('Cobalt & Sky', this)" class="color-swatch w-9 h-9 rounded-full bg-[#5B87B5] hover:scale-105 transition" title="Cobalt & Sky"></button>
+            </div>
+          </div>
+
+          <!-- Garment Sizing Selector -->
+          <div class="space-y-2.5">
+            <div class="flex items-center justify-between text-xs">
+              <span class="font-bold uppercase tracking-wider text-karoo-ink">GARMENT SIZING</span>
+              <button onclick="toggleSizeGuideModal()" class="text-karoo-primaryDark font-semibold flex items-center gap-1 hover:underline">
+                <i data-lucide="ruler" class="w-3.5 h-3.5"></i>
+                <span>Sizing Guide &amp; Fit</span>
+              </button>
+            </div>
+            <div class="grid grid-cols-5 gap-2">
+              <button onclick="selectSize('XS', this)" class="size-btn py-2.5 rounded-lg border border-karoo-border bg-white text-xs font-semibold text-karoo-ink hover:bg-karoo-panel transition">XS</button>
+              <button onclick="selectSize('S', this)" class="size-btn py-2.5 rounded-lg border border-karoo-border bg-white text-xs font-semibold text-karoo-ink hover:bg-karoo-panel transition">S</button>
+              <button onclick="selectSize('M', this)" class="size-btn py-2.5 rounded-lg border border-karoo-border bg-white text-xs font-semibold text-karoo-ink hover:bg-karoo-panel transition">M</button>
+              <button onclick="selectSize('L', this)" class="size-btn py-2.5 rounded-lg border border-karoo-border bg-white text-xs font-semibold text-karoo-ink hover:bg-karoo-panel transition">L</button>
+              <button onclick="selectSize('XL', this)" class="size-btn py-2.5 rounded-lg border border-karoo-primary bg-karoo-primary text-xs font-semibold text-white shadow-xs transition">XL</button>
+            </div>
+            <div class="p-3 rounded-xl border border-dashed border-karoo-border bg-white/70 flex items-center gap-2.5 text-xs text-karoo-muted">
+              <i data-lucide="sliders" class="w-4 h-4 text-karoo-primary shrink-0"></i>
+              <span>Complimentary custom crown depth &amp; wavy brim shaping provided on request after order confirmation.</span>
+            </div>
+          </div>
+
+          <!-- Slow Fashion Atelier Cadence Box -->
+          <div class="bg-karoo-panel/45 rounded-xl p-4 border border-karoo-border space-y-3">
+            <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-karoo-ink">
+              <i data-lucide="hourglass" class="w-4 h-4 text-karoo-primary"></i>
+              <span>SLOW FASHION ATELIER CADENCE</span>
+            </div>
+            <ul class="space-y-2.5 text-xs">
+              <li class="flex items-start gap-2">
+                <span class="w-1.5 h-1.5 rounded-full bg-karoo-primary mt-1.5 shrink-0"></span>
+                <div>
+                  <p class="font-semibold text-karoo-ink">14–21 Working Days Crafting Window</p>
+                  <p class="text-karoo-muted leading-relaxed">Each piece is individually crocheted stitch-by-stitch by our Nieu-Bethesda &amp; Mthatha artisan guild.</p>
+                </div>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="w-1.5 h-1.5 rounded-full bg-karoo-primary mt-1.5 shrink-0"></span>
+                <div>
+                  <p class="font-semibold text-karoo-ink">South African Courier Fulfillment</p>
+                  <p class="text-karoo-muted leading-relaxed">Door-to-door carbon-neutral courier via RAM or The Courier Guy (Johannesburg, Cape Town, Durban, Eastern Cape: 2–3 business days).</p>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Commission Action CTA Bar -->
+          <div class="flex items-center gap-3 pt-2">
+            <button id="detailWishlistBtn" onclick="toggleWishlist(currentDetailProductId)" class="w-12 h-12 rounded-xl border border-karoo-border bg-white flex items-center justify-center text-karoo-ink hover:bg-karoo-panel transition shrink-0">
+              <i data-lucide="heart" class="w-5 h-5"></i>
+            </button>
+            <button onclick="commissionCurrentGarment()" class="flex-grow py-3.5 px-5 rounded-xl bg-karoo-primary hover:bg-karoo-primaryDark text-white font-semibold flex items-center justify-between shadow-md transition">
+              <div class="text-left">
+                <span class="block text-xs font-bold uppercase tracking-wider">COMMISSION GARMENT</span>
+                <span class="block text-[10px] text-white/85">14–21 Days Creation</span>
+              </div>
+              <div class="flex items-center gap-1.5 font-editorial text-lg font-bold">
+                <span id="detailCommissionBtnPrice">R 250</span>
+                <i data-lucide="arrow-right" class="w-4 h-4"></i>
+              </div>
+            </button>
+          </div>
+
+          <!-- Expandable Provenance Accordions -->
+          <div class="divide-y divide-karoo-border border-t border-b border-karoo-border pt-1">
+            <div class="py-3">
+              <button onclick="toggleAccordion('acc-1')" class="w-full flex items-center justify-between text-left text-xs font-bold uppercase tracking-wider text-karoo-ink">
+                <span>RAW MOHAIR &amp; GRAAFF-REINET ORIGIN</span>
+                <i data-lucide="plus" id="icon-acc-1" class="w-4 h-4 text-karoo-primary transition-transform"></i>
+              </button>
+              <div id="acc-1" class="hidden pt-2.5 text-xs text-karoo-muted leading-relaxed">
+                Sourced from cruelty-free, wildlife-friendly farms in the Camdeboo plains around Graaff-Reinet and Nieu-Bethesda. Our kid mohair is sheared twice annually and washed in rainwater before hand-spinning.
+              </div>
+            </div>
+            <div class="py-3">
+              <button onclick="toggleAccordion('acc-2')" class="w-full flex items-center justify-between text-left text-xs font-bold uppercase tracking-wider text-karoo-ink">
+                <span>ARTISAN HANDS &amp; GUILD LIVING WAGE</span>
+                <i data-lucide="plus" id="icon-acc-2" class="w-4 h-4 text-karoo-primary transition-transform"></i>
+              </button>
+              <div id="acc-2" class="hidden pt-2.5 text-xs text-karoo-muted leading-relaxed">
+                Every garment bears the signature tag of its maker in Mthatha or Nieu-Bethesda. Artisans set their own studio rates—receiving 3.4x the regional textile benchmark plus solar spinning equipment grants.
+              </div>
+            </div>
+            <div class="py-3">
+              <button onclick="toggleAccordion('acc-3')" class="w-full flex items-center justify-between text-left text-xs font-bold uppercase tracking-wider text-karoo-ink">
+                <span>RITUALS OF CARE &amp; LIFETIME REPAIR</span>
+                <i data-lucide="plus" id="icon-acc-3" class="w-4 h-4 text-karoo-primary transition-transform"></i>
+              </button>
+              <div id="acc-3" class="hidden pt-2.5 text-xs text-karoo-muted leading-relaxed">
+                Soak gently in cool water with mild eucalyptus wool wash. Never wring; press flat in a cotton towel and dry in shade. Send your garment back to our Mthatha studio anytime for free stitch restoration.
+              </div>
+            </div>
+          </div>
+
+          <!-- Atelier Pairings: Complete The Silhouette -->
+          <div class="pt-4 space-y-3">
+            <div class="flex items-end justify-between">
+              <div>
+                <p class="text-[10px] font-bold uppercase tracking-widest text-karoo-primary">ATELIER PAIRINGS</p>
+                <h3 class="font-editorial text-2xl font-semibold text-karoo-ink">Complete The Silhouette</h3>
+              </div>
+              <span class="text-xs text-karoo-muted">Curated companions</span>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3.5">
+              <div class="bg-white rounded-xl border border-karoo-border overflow-hidden shadow-2xs garment-card cursor-pointer" onclick="openProductDetail(10)">
+                <div class="relative h-36 bg-stone-100">
+                  <img src="src/scarf.jpg" alt="Huckle Berry Scarf" class="w-full h-full object-cover" />
+                  <span class="absolute top-2 right-2 bg-white/95 text-karoo-ink text-[10px] font-semibold px-2 py-0.5 rounded-full">
+                    In Stock
+                  </span>
+                </div>
+                <div class="p-3">
+                  <p class="text-[9px] uppercase tracking-wider text-karoo-muted">MOHAIR &amp; WOOL</p>
+                  <h4 class="font-editorial text-base font-semibold text-karoo-ink truncate">Huckle Berry Scarf</h4>
+                  <div class="mt-2 pt-2 border-t border-karoo-border flex items-center justify-between">
+                    <span class="text-xs font-bold">R 150</span>
+                    <button onclick="event.stopPropagation(); addToBag(10)" class="w-6 h-6 rounded bg-karoo-panel text-karoo-primaryDark hover:bg-karoo-primary hover:text-white flex items-center justify-center transition">
+                      <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="bg-white rounded-xl border border-karoo-border overflow-hidden shadow-2xs garment-card cursor-pointer" onclick="openProductDetail(9)">
+                <div class="relative h-36 bg-stone-100">
+                  <img src="src/huckleberryscarf.jpg" alt="Nico Three Colour Scarf" class="w-full h-full object-cover" />
+                  <span class="absolute top-2 right-2 bg-white/95 text-karoo-ink text-[10px] font-semibold px-2 py-0.5 rounded-full">
+                    Ready
+                  </span>
+                </div>
+                <div class="p-3">
+                  <p class="text-[9px] uppercase tracking-wider text-karoo-muted">GOTS ORGANIC COTTON</p>
+                  <h4 class="font-editorial text-base font-semibold text-karoo-ink truncate">Nico Three Colour Scarf</h4>
+                  <div class="mt-2 pt-2 border-t border-karoo-border flex items-center justify-between">
+                    <span class="text-xs font-bold">R 170</span>
+                    <button onclick="event.stopPropagation(); addToBag(9)" class="w-6 h-6 rounded bg-karoo-panel text-karoo-primaryDark hover:bg-karoo-primary hover:text-white flex items-center justify-center transition">
+                      <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         VIEW 4: SAVED / WISHLIST VIEW
+         ========================================== -->
+    <section id="view-saved" class="hidden max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6 animate-fade-up">
+      <div class="border-b border-karoo-border pb-4 flex items-center justify-between">
+        <div>
+          <p class="text-[11px] font-bold uppercase tracking-widest text-karoo-primary">PERSONAL ARCHIVE</p>
+          <h1 class="font-editorial text-3xl font-semibold text-karoo-ink">Saved Atelier Pieces</h1>
+        </div>
+        <button onclick="switchTab('collection')" class="text-xs font-semibold text-karoo-primary hover:underline">
+          + Explore More Fibers
+        </button>
+      </div>
+      <div id="savedGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <!-- Populated via app.js -->
+      </div>
+    </section>
+
+    <!-- ==========================================
+         VIEW 5: HANDCRAFTED BAG & CHECKOUT ("HOOKED BY LINA")
+         ========================================== -->
+    <section id="view-bag" class="hidden max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-5 space-y-6 animate-fade-up">
+      <!-- Top Header Count -->
+      <div class="flex items-center justify-between">
+        <h1 class="text-sm sm:text-base font-semibold text-karoo-ink">Your Handcrafted Bag</h1>
+        <span id="bagCountSubheader" class="text-xs sm:text-sm font-medium text-karoo-muted">(0 GARMENTS)</span>
+      </div>
+
+      <!-- Estimated Dispatch Banner -->
+      <div class="bg-karoo-panel/80 border border-karoo-border rounded-xl p-4 flex items-start gap-3">
+        <i data-lucide="hourglass" class="w-5 h-5 text-karoo-primaryDark shrink-0 mt-0.5"></i>
+        <div class="text-xs sm:text-sm">
+          <p class="font-bold text-karoo-ink">Estimated Dispatch: Nov 18–24</p>
+          <p class="text-karoo-muted mt-0.5">Your artisans in Mthatha have been reserved to weave your edition.</p>
+        </div>
+      </div>
+
+      <!-- Bag Items Container -->
+      <div id="bagItemsContainer" class="space-y-4">
+        <!-- Populated dynamically via app.js -->
+      </div>
+
+      <!-- Sensory & Care Enhancements: Artisan Collective Endowment -->
+      <div class="space-y-2.5 pt-2">
+        <div class="flex items-center justify-between text-xs">
+          <span class="font-semibold text-karoo-ink">Sensory &amp; Care Enhancements</span>
+          <span class="text-karoo-muted">Optional rituals</span>
+        </div>
+
+        <div class="bg-karoo-panel/60 border border-karoo-border rounded-2xl p-4 sm:p-5 space-y-3.5">
+          <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-karoo-primaryDark">
+            <i data-lucide="heart-handshake" class="w-4 h-4"></i>
+            <span>ARTISAN COLLECTIVE ENDOWMENT</span>
+          </div>
+          <p class="text-xs text-karoo-ink leading-relaxed">
+            100% of this contribution is directly distributed to our craftswomen guild in Mthatha to fund solar yarn spinners.
+          </p>
+          <div class="grid grid-cols-4 gap-2">
+            <button onclick="setEndowment(150)" data-endow="150" class="endow-btn py-2 px-3 rounded-lg border border-karoo-border bg-white text-xs font-semibold text-karoo-ink hover:bg-karoo-panel transition">
+              R150
+            </button>
+            <button onclick="setEndowment(300)" data-endow="300" class="endow-btn py-2 px-3 rounded-lg border border-karoo-border bg-white text-xs font-semibold text-karoo-ink hover:bg-karoo-panel transition">
+              R300
+            </button>
+            <button onclick="setEndowment(500)" data-endow="500" class="endow-btn py-2 px-3 rounded-lg border border-karoo-border bg-white text-xs font-semibold text-karoo-ink hover:bg-karoo-panel transition">
+              R500
+            </button>
+            <button onclick="setEndowment(0)" data-endow="0" class="endow-btn py-2 px-3 rounded-lg border border-karoo-primary bg-karoo-primary text-xs font-semibold text-white shadow-2xs transition">
+              None
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Payment Receipt Card -->
+      <div class="bg-white rounded-2xl border border-karoo-border p-5 space-y-3 shadow-2xs">
+        <h2 class="text-xs font-bold uppercase tracking-wider text-karoo-ink">Payment Receipt</h2>
+        <div class="space-y-2 text-xs sm:text-sm">
+          <div class="flex justify-between text-karoo-muted">
+            <span id="receiptSubtotalLabel">Subtotal (0 items)</span>
+            <span id="receiptSubtotalValue" class="font-semibold text-karoo-ink">R0</span>
+          </div>
+          <div class="flex justify-between items-center text-karoo-muted">
+            <span>Courier Freight (South Africa)</span>
+            <span class="inline-flex items-center gap-1 font-bold text-karoo-ink text-xs">
+              <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-karoo-primary"></i>
+              COMPLIMENTARY
+            </span>
+          </div>
+          <div class="flex justify-between text-karoo-muted">
+            <span>Artisan Gratitude Endowment</span>
+            <span id="receiptEndowmentValue" class="font-semibold text-karoo-ink">R0</span>
+          </div>
+        </div>
+        <div class="border-t border-karoo-border pt-3 flex items-baseline justify-between">
+          <div>
+            <p class="text-sm font-bold text-karoo-ink">Total Payment</p>
+            <p class="text-[11px] text-karoo-muted">Includes 15% VAT</p>
+          </div>
+          <div class="text-right">
+            <span id="receiptTotalValue" class="font-editorial text-2xl font-bold text-karoo-ink">R0</span>
+            <span class="block text-[10px] font-semibold text-karoo-muted uppercase">ZAR</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- South African Conscious Payment Gateways -->
+      <div class="space-y-3 text-center pt-2">
+        <p class="text-[11px] font-bold uppercase tracking-widest text-karoo-muted">
+          SOUTH AFRICAN CONSCIOUS PAYMENT GATEWAYS
+        </p>
+        <div class="grid grid-cols-3 gap-2.5">
+          <button onclick="selectGateway('Ozow Instant EFT', this)" class="gateway-btn py-3 px-2 rounded-xl border-2 border-karoo-primary bg-white text-xs font-semibold text-karoo-ink shadow-2xs transition">
+            Ozow Instant<br/>EFT
+          </button>
+          <button onclick="selectGateway('Card Payments', this)" class="gateway-btn py-3 px-2 rounded-xl border border-karoo-border bg-white text-xs font-semibold text-karoo-ink hover:bg-karoo-panel transition">
+            Card<br/>Payments
+          </button>
+          <button onclick="selectGateway('Apple Pay', this)" class="gateway-btn py-3 px-2 rounded-xl border border-karoo-border bg-white text-xs font-semibold text-karoo-ink hover:bg-karoo-panel transition">
+            Apple Pay
+          </button>
+        </div>
+      </div>
+
+      <!-- 3 Guarantee Icons Row -->
+      <div class="grid grid-cols-3 gap-2 pt-3 border-t border-karoo-border text-center text-[11px] text-karoo-muted">
+        <div class="flex flex-col items-center gap-1">
+          <i data-lucide="recycle" class="w-4 h-4 text-karoo-ink"></i>
+          <span>100% Compostable Packaging</span>
+        </div>
+        <div class="flex flex-col items-center gap-1">
+          <i data-lucide="award" class="w-4 h-4 text-karoo-ink"></i>
+          <span>Lifetime Stitch Guarantee</span>
+        </div>
+        <div class="flex flex-col items-center gap-1">
+          <i data-lucide="rotate-ccw" class="w-4 h-4 text-karoo-ink"></i>
+          <span>30-Day Conscious Returns</span>
+        </div>
+      </div>
+
+      <!-- Proceed to Checkout CTA -->
+      <div class="pt-2 space-y-2">
+        <button onclick="openCheckoutModal()" class="w-full py-4 px-6 rounded-xl bg-karoo-primaryDark hover:bg-karoo-ink text-white font-semibold text-sm flex items-center justify-between shadow-lg transition">
+          <span>Proceed to Checkout</span>
+          <div class="flex items-center gap-2 font-bold">
+            <span id="checkoutBtnTotal">R0</span>
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </div>
+        </button>
+        <div class="flex items-center justify-center gap-1.5 text-[11px] text-karoo-muted">
+          <i data-lucide="lock" class="w-3.5 h-3.5"></i>
+          <span>Secure 256-Bit Encrypted South African Checkout</span>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="bg-karoo-panel/65 border-t border-karoo-border mt-12 py-10 px-4 text-center space-y-2">
+    <p class="font-editorial text-xl tracking-wider font-semibold text-karoo-ink uppercase">
+      HOOKED BY LINA
+    </p>
+    <p class="text-xs font-medium text-karoo-ink underline underline-offset-4">
+      Artisan Guilds: Mthatha
+    </p>
+    <p class="text-xs text-karoo-muted pt-1">
+      © 2026 Hooked By Lina. Handcrafted slowly in the Eastern Cape, South Africa.
+    </p>
+  </footer>
+
+  <!-- STICKY BOTTOM MOBILE NAVIGATION BAR -->
+  <nav class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-karoo-bg/95 backdrop-blur-md border-t border-karoo-border px-6 py-2 flex items-center justify-between text-[11px] font-medium text-karoo-muted">
+    <button onclick="switchTab('home')" id="mob-nav-home" class="flex flex-col items-center gap-1 py-1 text-karoo-muted transition">
+      <i data-lucide="home" class="w-5 h-5"></i>
+      <span>Home</span>
+    </button>
+    <button onclick="switchTab('collection')" id="mob-nav-collection" class="flex flex-col items-center gap-1 py-1 text-karoo-primary font-semibold transition">
+      <i data-lucide="sparkles" class="w-5 h-5"></i>
+      <span>Collection</span>
+    </button>
+    <button onclick="switchTab('saved')" id="mob-nav-saved" class="flex flex-col items-center gap-1 py-1 text-karoo-muted relative transition">
+      <i data-lucide="heart" class="w-5 h-5"></i>
+      <span>Saved</span>
+    </button>
+    <button onclick="switchTab('bag')" id="mob-nav-bag" class="flex flex-col items-center gap-1 py-1 text-karoo-muted relative transition">
+      <div class="relative">
+        <i data-lucide="shopping-bag" class="w-5 h-5"></i>
+        <span id="mobBagDot" class="hidden absolute -top-1 -right-1.5 w-2 h-2 rounded-full bg-karoo-primary"></span>
+      </div>
+      <span>Bag</span>
+    </button>
+  </nav>
+
+  <!-- SIZING GUIDE MODAL -->
+  <div id="sizeGuideModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl animate-scale-in">
+      <div class="flex items-center justify-between border-b border-karoo-border pb-3">
+        <h3 class="font-editorial text-2xl font-semibold">Karoo Atelier Sizing Guide</h3>
+        <button onclick="toggleSizeGuideModal()" class="p-1 rounded-full hover:bg-karoo-panel">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+      <p class="text-xs text-karoo-muted leading-relaxed">
+        Natural wet-spun linen and Karoo kid mohair relax gently to your silhouette after 2–3 wears.
+      </p>
+      <table class="w-full text-xs text-left border-collapse">
+        <thead>
+          <tr class="border-b border-karoo-border text-karoo-muted uppercase">
+            <th class="py-2">Size</th>
+            <th class="py-2">Head / Crown (cm)</th>
+            <th class="py-2">Chest / Bust (cm)</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-karoo-border">
+          <tr><td class="py-2 font-bold">XS</td><td class="py-2">53–54 cm</td><td class="py-2">78–83 cm</td></tr>
+          <tr><td class="py-2 font-bold">S</td><td class="py-2">55–56 cm</td><td class="py-2">84–89 cm</td></tr>
+          <tr><td class="py-2 font-bold">M</td><td class="py-2">57–58 cm</td><td class="py-2">90–96 cm</td></tr>
+          <tr><td class="py-2 font-bold">L</td><td class="py-2">59–60 cm</td><td class="py-2">97–103 cm</td></tr>
+          <tr><td class="py-2 font-bold">XL</td><td class="py-2">61–63 cm</td><td class="py-2">104–112 cm</td></tr>
+        </tbody>
+      </table>
+      <button onclick="toggleSizeGuideModal()" class="w-full py-2.5 rounded-xl bg-karoo-primary text-white text-xs font-semibold uppercase tracking-wider">
+        Got It
+      </button>
+    </div>
+  </div>
+
+  <!-- SOUTH AFRICAN CHECKOUT COMPLETION MODAL -->
+  <div id="checkoutModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-6 space-y-5 shadow-2xl animate-scale-in max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b border-karoo-border pb-3">
+        <div>
+          <span class="text-[10px] font-bold uppercase tracking-widest text-karoo-primary">HOOKED BY LINA</span>
+          <h3 class="font-editorial text-2xl font-semibold text-karoo-ink">Artisan Reservation &amp; Dispatch</h3>
+        </div>
+        <button onclick="closeCheckoutModal()" class="p-1.5 rounded-full hover:bg-karoo-panel">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form onsubmit="submitOrder(event)" class="space-y-4 text-xs">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold text-karoo-ink mb-1">Full Name</label>
+            <input type="text" required placeholder="Nandi Mbeki" class="w-full px-3 py-2.5 rounded-lg border border-karoo-border focus:outline-none focus:ring-2 focus:ring-karoo-primary" />
+          </div>
+          <div>
+            <label class="block font-semibold text-karoo-ink mb-1">Mobile (RAM / Courier SMS)</label>
+            <input type="tel" required placeholder="+27 72 000 0000" class="w-full px-3 py-2.5 rounded-lg border border-karoo-border focus:outline-none focus:ring-2 focus:ring-karoo-primary" />
+          </div>
+        </div>
+        <div>
+          <label class="block font-semibold text-karoo-ink mb-1">South African Delivery Address</label>
+          <input type="text" required placeholder="Street Address, Suburb, City (e.g. Mthatha / Cape Town)" class="w-full px-3 py-2.5 rounded-lg border border-karoo-border focus:outline-none focus:ring-2 focus:ring-karoo-primary" />
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold text-karoo-ink mb-1">Province</label>
+            <select class="w-full px-3 py-2.5 rounded-lg border border-karoo-border bg-white">
+              <option>Eastern Cape</option>
+              <option>Western Cape</option>
+              <option>Gauteng</option>
+              <option>KwaZulu-Natal</option>
+              <option>Free State</option>
+              <option>Northern Cape</option>
+              <option>Mpumalanga</option>
+              <option>Limpopo</option>
+              <option>North West</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-semibold text-karoo-ink mb-1">Custom Tailoring Note</label>
+            <input type="text" placeholder="e.g. Crown depth +1cm" class="w-full px-3 py-2.5 rounded-lg border border-karoo-border focus:outline-none focus:ring-2 focus:ring-karoo-primary" />
+          </div>
+        </div>
+
+        <div class="p-3.5 rounded-xl bg-karoo-panel/70 border border-karoo-border flex items-center justify-between">
+          <div>
+            <p class="font-bold text-karoo-ink">Selected Gateway: <span id="modalGatewayName" class="text-karoo-primaryDark">Ozow Instant EFT</span></p>
+            <p class="text-[11px] text-karoo-muted">Complimentary Carbon-Neutral SA Courier included</p>
+          </div>
+          <span id="modalTotalAmount" class="font-editorial text-xl font-bold text-karoo-ink">R0</span>
+        </div>
+
+        <button type="submit" class="w-full py-3.5 rounded-xl bg-karoo-primary hover:bg-karoo-primaryDark text-white font-semibold uppercase tracking-wider transition shadow-md">
+          Authorize &amp; Reserve Artisan Loom
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="toast" class="fixed bottom-20 md:bottom-6 right-4 z-50 hidden bg-karoo-ink text-white px-4 py-3 rounded-xl shadow-xl border border-white/10 items-center gap-3 text-xs font-medium animate-scale-in">
+    <i data-lucide="sparkles" class="w-4 h-4 text-karoo-primary"></i>
+    <span id="toastMessage">Added to your Handcrafted Bag</span>
+  </div>
+
+  <!-- External Application Script -->
+  <script src="app.js"></script>
+</body>
+</html>
